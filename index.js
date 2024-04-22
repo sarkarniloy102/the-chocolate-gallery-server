@@ -22,14 +22,33 @@ const client = new MongoClient(uri, {
 
 async function run() {
     try {
-        // Connect the client to the server	(optional starting in v4.7)
         await client.connect();
+        const categoryCollection = client.db("TCG").collection("Category_collection");
+        const reviewCollection = client.db("TCG").collection("reviews_collection");
+        const popularCollection = client.db("TCG").collection("popular_category")
+
+        // to get all category
+        app.get('/allcategory', async (req, res) => {
+            const result = await categoryCollection.find().toArray();
+            res.send(result);
+        })
+        // to get popular category
+        app.get('/popular', async (req, res) => {
+            const result = await popularCollection.find().toArray();
+            res.send(result);
+        })
+        // to get all reviews
+        app.get('/reviews', async (req, res) => {
+            const result = await reviewCollection.find().toArray();
+            res.send(result);
+        })
+
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
     } finally {
         // Ensures that the client will close when you finish/error
-        await client.close();
+        // await client.close();
     }
 }
 run().catch(console.dir);
