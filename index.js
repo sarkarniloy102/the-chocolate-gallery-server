@@ -25,7 +25,8 @@ async function run() {
         await client.connect();
         const categoryCollection = client.db("TCG").collection("Category_collection");
         const reviewCollection = client.db("TCG").collection("reviews_collection");
-        const popularCollection = client.db("TCG").collection("popular_category")
+        const popularCollection = client.db("TCG").collection("popular_category");
+        const cartCollection = client.db("TCG").collection("carts")
 
         // to get all category
         app.get('/allcategory', async (req, res) => {
@@ -42,7 +43,17 @@ async function run() {
             const result = await reviewCollection.find().toArray();
             res.send(result);
         })
+        // carts collection
+        app.post('/carts', async (req, res) => {
+            const cartItem = req.body;
+            const result = await cartCollection.insertOne(cartItem);
+            res.send(result);
 
+        })
+        app.get('/carts', async (req, res) => {
+            const result = await cartCollection.find().toArray();
+            res.send(result);
+        })
         // Send a ping to confirm a successful connection
         await client.db("admin").command({ ping: 1 });
         console.log("Pinged your deployment. You successfully connected to MongoDB!");
