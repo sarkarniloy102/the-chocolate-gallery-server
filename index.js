@@ -23,10 +23,18 @@ const client = new MongoClient(uri, {
 async function run() {
     try {
         await client.connect();
+        const userCollection = client.db("TCG").collection("Users");
         const categoryCollection = client.db("TCG").collection("Category_collection");
         const reviewCollection = client.db("TCG").collection("reviews_collection");
         const popularCollection = client.db("TCG").collection("popular_category");
         const cartCollection = client.db("TCG").collection("carts")
+
+        // post user information
+        app.post('/users', async (req, res) => {
+            const user = req.body();
+            const result = await userCollection.insertOne(user);
+            res.send(result);
+        })
 
         // to get all category
         app.get('/allcategory', async (req, res) => {
@@ -56,7 +64,7 @@ async function run() {
             const result = await cartCollection.find(query).toArray();
             res.send(result);
         })
-
+        // delete cart from mycart in user dashboard
         app.delete('/carts/:id', async (req, res) => {
             const id = req.params.id;
             const query = { _id: new ObjectId(id) };
