@@ -27,11 +27,15 @@ async function run() {
         const categoryCollection = client.db("TCG").collection("Category_collection");
         const reviewCollection = client.db("TCG").collection("reviews_collection");
         const popularCollection = client.db("TCG").collection("popular_category");
-        const cartCollection = client.db("TCG").collection("carts")
+        const cartCollection = client.db("TCG").collection("carts");
 
         // post user information
         app.post('/users', async (req, res) => {
-            const user = req.body();
+            const user = req.body;
+            const query = { email: user.email };
+            const emailExist = await userCollection.findOne(query);
+            if (emailExist)
+                return res.send({ message: 'user already exist', insertId: null });
             const result = await userCollection.insertOne(user);
             res.send(result);
         })
