@@ -39,6 +39,11 @@ async function run() {
             const result = await userCollection.insertOne(user);
             res.send(result);
         })
+        // get all users
+        app.get('/users',async(req,res)=>{
+            const result = await userCollection.find().toArray();
+            res.send(result);
+        })
 
         // to get all category
         app.get('/allcategory', async (req, res) => {
