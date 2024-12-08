@@ -41,8 +41,8 @@ async function run() {
         app.post('/users', async (req, res) => {
             const user = req.body;
             const query = { email: user.email };
-            const emailExist = await userCollection.findOne(query);
-            if (emailExist)
+            const existingUser = await userCollection.findOne(query);
+            if (existingUser)
                 return res.send({ message: 'user already exist', insertId: null });
             const result = await userCollection.insertOne(user);
 
@@ -128,6 +128,13 @@ async function run() {
             const result = await categoryCollection.find().toArray();
             res.send(result);
         })
+        // post category data added by admin
+        app.post('/category',verifytoken,verifyAdmin, async (req, res) => {
+            const item = req.body;
+            const result = await categoryCollection.insertOne(item);
+            res.send(result);
+        })
+
         // to get popular category
         app.get('/popular', async (req, res) => {
             const result = await popularCollection.find().toArray();
