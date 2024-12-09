@@ -129,11 +129,19 @@ async function run() {
             res.send(result);
         })
         // post category data added by admin
-        app.post('/category',verifytoken,verifyAdmin, async (req, res) => {
+        app.post('/allcategory', verifytoken, verifyAdmin, async (req, res) => {
             const item = req.body;
             const result = await categoryCollection.insertOne(item);
             res.send(result);
         })
+        // delete category
+        app.delete('/allcategory/:id', verifytoken, verifyAdmin, async (req, res) => {
+            const id = req.params.id;
+            console.log('id is', id);
+            const query = { _id: new ObjectId(id) }
+            const result = await categoryCollection.deleteOne(query);
+            res.send(result)
+        });
 
         // to get popular category
         app.get('/popular', async (req, res) => {
